@@ -16,14 +16,14 @@ export const createLogger = options => {
     }
   }
 
-  const {logger, level, diff, predicate, transformer} = options
+  const {logger, level, diff, predicate, transformer} = opts
   const support = _support(opts.logger)
 
   if (!support.console) {
     return () => next => action => next(action)
   }
 
-  if (!(level in logger)) { throw new Error(`invalid level: ${level}`) }
+  if (!logger[level]) { throw new Error(`invalid level: ${level}`) }
 
   return store => next => action => {
 
@@ -47,7 +47,7 @@ export const createLogger = options => {
     if (diff) { payload.diff = get_diff(before, after) }
 
     if (predicate(payload)) {
-      transformer(logger, payload, support, options)
+      transformer(logger, payload, support, opts)
     }
 
     if (error) { throw error }
