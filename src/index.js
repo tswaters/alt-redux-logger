@@ -1,12 +1,13 @@
 
 'use strict'
 
-import defaults from './defaults'
-import _support from './support'
+import {get_defaults} from './defaults'
+import {get_support} from './support'
 import {diff as get_diff} from '@tswaters/tiny-diff/es'
 
-export const createLogger = options => {
+export const createLogger = (options = {}) => {
 
+  const defaults = get_defaults()
   const opts = {
     ...defaults,
     ...options,
@@ -17,7 +18,7 @@ export const createLogger = options => {
   }
 
   const {logger, level, diff, predicate, transformer} = opts
-  const support = _support(opts.logger)
+  const support = get_support(opts.logger)
 
   if (!support.console) {
     return () => next => action => next(action)

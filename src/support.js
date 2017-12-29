@@ -11,7 +11,7 @@ const browser = {
   isSafari: !isNode && !!window.safari,
 }
 
-export default logger => {
+export const get_support = logger => {
   return ({
     ansi: browser.isNode,
     console: hasConsole,
