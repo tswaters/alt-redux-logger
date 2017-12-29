@@ -44,7 +44,7 @@ export const createLogger = options => {
 
     const payload = {action, before, after, error, now, took}
 
-    if (diff) { payload.diff = get_diff(payload.before, payload.after) }
+    if (diff) { payload.diff = get_diff(before, after) }
 
     if (predicate(payload)) {
       transformer(logger, payload, support, options)
