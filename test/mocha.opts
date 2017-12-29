@@ -1,0 +1,3 @@
+--no-timeouts
+--require ./test/register.js
+test/**/*.test.js
