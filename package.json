@@ -1,0 +1,51 @@
+{
+  "name": "alt-redux-logger",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "build": "rollup -c",
+    "build:watch": "rollup -c -w",
+    "lint": "eslint .",
+    "test": "cross-env NODE_ENV=instrument nyc mocha"
+  },
+  "nyc": {
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [],
+    "reporter": [
+      "lcov",
+      "text-summary"
+    ],
+    "sourceMap": false,
+    "instrument": false
+  },
+  "keywords": [],
+  "author": {
+    "name": "Tyler Waters",
+    "email": "tyler.waters@gmail.com"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.0.0-beta.35",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0-beta.35",
+    "@babel/preset-env": "^7.0.0-beta.35",
+    "babel-plugin-transform-es3-member-expression-literals": "^6.22.0",
+    "babel-plugin-transform-es3-property-literals": "^6.22.0",
+    "eslint": "^4.14.0",
+    "eslint-config-tswaters": "github:tswaters/eslint-config-tswaters",
+    "mocha": "^4.0.1",
+    "nyc": "^11.4.1",
+    "rimraf": "^2.6.2",
+    "rollup": "^0.53.1",
+    "rollup-plugin-babel": "^4.0.0-beta.0",
+    "rollup-plugin-node-resolve": "^3.0.0",
+    "rollup-plugin-uglify": "^2.0.1"
+  },
+  "dependencies": {
+    "@tswaters/tiny-diff": "0.0.2",
+    "tiny-ansi-colors": "0.0.3"
+  }
+}
