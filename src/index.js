@@ -1,6 +1,4 @@
 
-'use strict'
-
 import {get_defaults} from './defaults'
 import {get_support} from './support'
 import {diff as get_diff} from '@tswaters/tiny-diff/es'
