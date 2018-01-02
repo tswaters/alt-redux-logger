@@ -3,7 +3,7 @@ import assert from 'assert'
 import sinon from 'sinon'
 
 import {createLogger} from '../../src'
-import * as diff from '@tswaters/tiny-diff/es'
+import * as diff from '@tswaters/tiny-diff'
 import * as support from '../../src/support'
 import * as transformer from '../../src/transformer'
 

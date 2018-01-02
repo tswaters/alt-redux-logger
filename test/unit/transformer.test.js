@@ -1,7 +1,7 @@
 
 import assert from 'assert'
 import sinon from 'sinon'
-import * as colors from 'tiny-ansi-colors/es'
+import * as colors from 'tiny-ansi-colors'
 import {get_defaults} from '../../src/defaults'
 import {transformer} from '../../src/transformer'
 
