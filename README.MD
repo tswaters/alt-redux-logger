@@ -1,5 +1,10 @@
-
 # Alt Redux Logger
+
+[![npm version][npm-badge]][npm-url]
+[![Build Status][travis-badge]][travis-url]
+[![Coverage Status][coveralls-badge]][coveralls-url]
+[![Dependency Status][dependency-badge]][dependency-url]
+[![devDependency Status][devDependency-badge]][devDependency-url]
 
 A redux logging middleware
 
@@ -106,3 +111,14 @@ That said, this module is heavily inspired by `redux-logger` - at least with the
 * [ ] provide a state transformer for before/after/error to turn immutablejs back to pojo prior to logging.
 
 * [ ] clean up & publish to npm
+
+[npm-badge]: https://badge.fury.io/js/alt-redux-logger.svg
+[npm-url]: https://badge.fury.io/js/alt-redux-logger
+[travis-badge]: https://travis-ci.org/tswaters/alt-redux-logger.svg?branch=master
+[travis-url]: https://travis-ci.org/tswaters/alt-redux-logger
+[coveralls-badge]: https://coveralls.io/repos/github/tswaters/alt-redux-logger/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/tswaters/alt-redux-logger?branch=master
+[dependency-badge]: https://david-dm.org/tswaters/alt-redux-logger.svg
+[dependency-url]: https://david-dm.org/tswaters/alt-redux-logger
+[devDependency-badge]: https://david-dm.org/tswaters/alt-redux-logger/dev-status.svg
+[devDependency-url]: https://david-dm.org/tswaters/alt-redux-logger?type=dev
