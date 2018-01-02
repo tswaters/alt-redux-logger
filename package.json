@@ -2,7 +2,8 @@
   "name": "alt-redux-logger",
   "version": "0.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "./dist/alt-redux-logger.js",
+  "module": "./dist/alt-redux-logger.mjs",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "rollup -c",
@@ -26,6 +27,9 @@
     "sourceMap": false,
     "instrument": false
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [],
   "author": {
     "name": "Tyler Waters",
@@ -54,7 +58,7 @@
     "sinon": "^4.1.3"
   },
   "dependencies": {
-    "@tswaters/tiny-diff": "0.0.2",
-    "tiny-ansi-colors": "0.0.3"
+    "@tswaters/tiny-diff": "0.0.3",
+    "tiny-ansi-colors": "0.0.4"
   }
 }

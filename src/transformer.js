@@ -1,4 +1,4 @@
-import {colors as _colors} from 'tiny-ansi-colors/es'
+import {colors as _colors} from 'tiny-ansi-colors'
 
 export const transformer = (logger, payload, support, options) => {
 

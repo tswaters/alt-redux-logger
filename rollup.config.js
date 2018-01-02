@@ -34,13 +34,14 @@ const config = (browser, minify) => {
   if (browser) {
     plugins.push(
       resolve({
+        module: true,
         extensions: ['.js', '.mjs']
       })
     )
   } else {
     external.push(
-      'tiny-ansi-colors/es',
-      '@tswaters/tiny-diff/es'
+      'tiny-ansi-colors',
+      '@tswaters/tiny-diff'
     )
   }
 
@@ -56,7 +57,7 @@ const config = (browser, minify) => {
       format: 'umd',
       amd: {id: 'altReduxLogger'}
     } : [{
-      file: './es/index.mjs',
+      file: './dist/alt-redux-logger.mjs',
       format: 'es'
     }, {
       file: './dist/alt-redux-logger.js',

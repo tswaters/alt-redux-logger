@@ -5,10 +5,10 @@ A redux logging middleware
 
 ## Exports
 
-* `./dist/alt-redux-logger.js` - cjs bundle, transpiled to node4. this is referenced in package.json's main entry
+* `./dist/alt-redux-logger.js` - cjs bundle, transpiled to node4. referenced in package.json's main entry
+* `./dist/alt-redux-logger.mjs` - es6 exports. transpiled to node4. referenced in package.json's module entry
 * `./dist/alt-redux-logger.umd.js` - browser bundle, transpiled to ie8.
 * `./dist/alt-redux-logger.umd.min.js` - browser bundle minified
-* `./es/index.mjs` - es6 module exports. transpiled to node4.
 
 ### Polyfills
 
