@@ -26,7 +26,8 @@ describe('integration test', () => {
       createLogger({
         logger,
         diff: true,
-        predicate: (getState, action) => action.type !== 'ERROR'
+        predicate: (getState, action) => action.type !== 'ERROR',
+        diffPredicate: (getState, action) => action.type !== 'REMOVE_ITEM'
       })
     )
     store.dispatch(addItem('item #1'))
@@ -44,9 +45,9 @@ describe('integration test', () => {
 
     // there's no way i'm asserting all of these.
     // the output from console should show if something is wrong.
-    assert.equal(logger.log.callCount, 48)
-    assert.equal(logger.group.callCount, 18)
-    assert.equal(logger.groupEnd.callCount, 18)
+    assert.equal(logger.log.callCount, 39)
+    assert.equal(logger.group.callCount, 15)
+    assert.equal(logger.groupEnd.callCount, 15)
 
   })
 

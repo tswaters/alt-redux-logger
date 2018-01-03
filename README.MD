@@ -46,11 +46,15 @@ It is recommended you put this AFTER any thunk/promise middleware so you only se
     * _logger_ (object, default: console) the logger to use
     * _color_ (boolean, default: true) whether to use colors
     * _diff_ (boolean, default: false) whether to perform a diff
+    * _diffPredicate_ (function=>boolean, default: `() => true`) used to exclude diffs; you get (getState, action).
     * _level_ (string, default: 'log') method to use on the logger (throws during initialization if it doesn't exist)
     * _styles_ (object, default: see below) color overrides
     * _format_time_ (function, default: `now => new Date(now).toLocaleString()`) date transformer
     * _predicate_ (function=>boolean, default: `() => true`) used to exclude actions; you get (getState, action).
     * _printer_ (function=>void, default: pretty; see below) used to overwrite how log is called
+    * _stateTransformer_ (function=>*, default: `state => state`) used to transform state prior to hitting logger
+    * _actionTransformer_ (function=>*, default: `action => action`) used to transform action prior to hitting logger
+    * _errorTransformer_ (function=>*, default: `error => error`) used to transform error prior to hitting logger
 
 ### Printer
 

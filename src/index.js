@@ -15,7 +15,18 @@ export const createLogger = (options = {}) => {
     }
   }
 
-  const {logger, level, diff, predicate, printer} = opts
+  const {
+    logger,
+    level,
+    diff,
+    diffPredicate,
+    predicate,
+    printer,
+    stateTransformer,
+    actionTransformer,
+    errorTransformer
+  } = opts
+
   const support = get_support(opts.logger)
 
   if (!support.console) {
@@ -31,7 +42,7 @@ export const createLogger = (options = {}) => {
     }
 
     const now = Date.now()
-    const before = store.getState()
+    const before = stateTransformer(store.getState())
 
     let error = null
     let returnValue = null
@@ -39,16 +50,24 @@ export const createLogger = (options = {}) => {
     try {
       returnValue = next(action)
     } catch (err) {
-      error = err
+      error = errorTransformer(err)
     }
 
     const took = Date.now() - now
-    const after = store.getState()
+    const after = stateTransformer(store.getState())
 
-    const payload = {action, before, after, error, now, took}
+    const payload = {
+      action: actionTransformer(action),
+      before,
+      after,
+      error,
+      now,
+      took
+    }
 
-    if (diff) { payload.diff = get_diff(before, after) }
-
+    if (diff && diffPredicate(store.getState, action)) {
+      payload.diff = get_diff(before, after)
+    }
 
     printer(logger, payload, support, opts)
 

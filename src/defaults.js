@@ -28,6 +28,12 @@ export const get_defaults = () => ({
 
   predicate: () => true,
 
+  diffPredicate: () => true,
+
+  stateTransformer: state => state,
+  actionTransformer: action => action,
+  errorTransformer: error => error,
+
   printer
 
 })
