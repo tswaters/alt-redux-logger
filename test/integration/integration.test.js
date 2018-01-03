@@ -26,7 +26,7 @@ describe('integration test', () => {
       createLogger({
         logger,
         diff: true,
-        predicate: payload => payload.action.type !== 'ERROR'
+        predicate: (getState, action) => action.type !== 'ERROR'
       })
     )
     store.dispatch(addItem('item #1'))

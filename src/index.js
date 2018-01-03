@@ -26,6 +26,10 @@ export const createLogger = (options = {}) => {
 
   return store => next => action => {
 
+    if (!predicate(store.getState, action)) {
+      return next(action)
+    }
+
     const now = Date.now()
     const before = store.getState()
 
@@ -45,9 +49,8 @@ export const createLogger = (options = {}) => {
 
     if (diff) { payload.diff = get_diff(before, after) }
 
-    if (predicate(payload)) {
-      printer(logger, payload, support, opts)
-    }
+
+    printer(logger, payload, support, opts)
 
     if (error) { throw error }
     return returnValue

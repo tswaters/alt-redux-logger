@@ -49,7 +49,7 @@ It is recommended you put this AFTER any thunk/promise middleware so you only se
     * _level_ (string, default: 'log') method to use on the logger (throws during initialization if it doesn't exist)
     * _styles_ (object, default: see below) color overrides
     * _format_time_ (function, default: `now => new Date(now).toLocaleString()`) date transformer
-    * _predicate_ (function=>boolean, default: `() => true`) used to exclude actions; you get all of payload.
+    * _predicate_ (function=>boolean, default: `() => true`) used to exclude actions; you get (getState, action).
     * _printer_ (function=>void, default: pretty; see below) used to overwrite how log is called
 
 ### Printer
