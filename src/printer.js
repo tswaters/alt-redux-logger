@@ -1,6 +1,6 @@
 import {colors as _colors} from 'tiny-ansi-colors'
 
-export const transformer = (logger, payload, support, options) => {
+export const printer = (logger, payload, support, options) => {
 
   const {color: use_color, level, styles, format_time} = options
   const {action, before, after, diff, error, now, took} = payload

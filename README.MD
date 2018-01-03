@@ -50,11 +50,11 @@ It is recommended you put this AFTER any thunk/promise middleware so you only se
     * _styles_ (object, default: see below) color overrides
     * _format_time_ (function, default: `now => new Date(now).toLocaleString()`) date transformer
     * _predicate_ (function=>boolean, default: `() => true`) used to exclude actions; you get all of payload.
-    * _transformer_ (function=>void, default: pretty logger; see below) used to overwrite how log is called
+    * _printer_ (function=>void, default: pretty; see below) used to overwrite how log is called
 
-### Transformer
+### Printer
 
-Transformer is used to translate the payload (action, before & after states) from redux into logging statements. It is a function that takes the following 4 parameters.  See [`./src/transformer.js`](./src/transformer.js) for how the pretty logger does it.
+Printer is used to translate the payload (action, before & after states) from redux into logging statements. It is a function that takes the following 4 parameters.  See [`./src/printer.js`](./src/printer.js) for how the pretty printer does it.
 
 * *logger* - the loger instance provided to `createLogger` (by default, this is console)
 * *payload* - all the information available
@@ -98,7 +98,7 @@ Here are the defaults:
 
 Why not just use [redux-logger](https://github.com/evgenyrodionov/redux-logger)?  This works great for development in the browser, but fails short on the server and in production environments.
 
-* No "don't use a pretty logger at all, `JSON.stringify` everything and do one log per action" option. I take a different approach to transformations - a default transformer is provided that is pretty, you can overwrite its colors -- or you can use your own transformer, e.g. `transfomer: (logger, payload) => logger.log(JSON.stringify(payload))`.
+* No "don't use a pretty logger at all, `JSON.stringify` everything and do one log per action" option. I take a different approach to printing - a default printer is provided that is pretty, you can overwrite its colors -- or you can use your own printer, e.g. `printer: (logger, payload) => logger.log(JSON.stringify(payload))`.
 
 * No console coloring support. Bringing in something like chalk to a browser bundle seems a bit heavy handed, so I wrote a [very minimal coloring library](https://github.com/tswaters/tiny-ansi-colors) to support the very basics.
 

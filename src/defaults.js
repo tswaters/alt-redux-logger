@@ -1,5 +1,5 @@
 
-import {transformer} from './transformer'
+import {printer} from './printer'
 
 export const get_defaults = () => ({
 
@@ -28,6 +28,6 @@ export const get_defaults = () => ({
 
   predicate: () => true,
 
-  transformer
+  printer
 
 })

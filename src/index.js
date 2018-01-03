@@ -15,7 +15,7 @@ export const createLogger = (options = {}) => {
     }
   }
 
-  const {logger, level, diff, predicate, transformer} = opts
+  const {logger, level, diff, predicate, printer} = opts
   const support = get_support(opts.logger)
 
   if (!support.console) {
@@ -46,7 +46,7 @@ export const createLogger = (options = {}) => {
     if (diff) { payload.diff = get_diff(before, after) }
 
     if (predicate(payload)) {
-      transformer(logger, payload, support, opts)
+      printer(logger, payload, support, opts)
     }
 
     if (error) { throw error }

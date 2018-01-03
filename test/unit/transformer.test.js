@@ -3,13 +3,13 @@ import assert from 'assert'
 import sinon from 'sinon'
 import * as colors from 'tiny-ansi-colors'
 import {get_defaults} from '../../src/defaults'
-import {transformer} from '../../src/transformer'
+import {printer} from '../../src/printer'
 
 // general note
 // can't set TZ=UTC in windows, and I'm not to keen on updating local timezone to UTC
 // get around this in linux CI by setting TZ=Canada/Pacific - that will output '1969-12-31 16:00:00'
 
-describe('default transformer', () => {
+describe('default printer', () => {
 
   const options = {
     ...get_defaults(),
@@ -55,7 +55,7 @@ describe('default transformer', () => {
 
   it('should function properly - no colors', () => {
 
-    transformer(logger, payload, support, options)
+    printer(logger, payload, support, options)
 
     assert.equal(logger.log.callCount, 3)
     assert.equal(logger.group.callCount, 1)
@@ -72,7 +72,7 @@ describe('default transformer', () => {
     support.colors = true
     support.ansi = true
 
-    transformer(logger, payload, support, options)
+    printer(logger, payload, support, options)
 
     assert.equal(logger.log.callCount, 3)
     assert.equal(logger.group.callCount, 1)
@@ -89,7 +89,7 @@ describe('default transformer', () => {
     support.colors = true
     support.ansi = false
 
-    transformer(logger, payload, support, options)
+    printer(logger, payload, support, options)
 
     assert.equal(logger.log.callCount, 3)
     assert.equal(logger.group.callCount, 1)
@@ -111,7 +111,7 @@ describe('default transformer', () => {
     support.group = false
     support.groupEnd = false
 
-    transformer(logger, payload, support, options)
+    printer(logger, payload, support, options)
 
     assert.equal(logger.log.callCount, 5)
     assert.equal(logger.group.callCount, 0)
@@ -129,7 +129,7 @@ describe('default transformer', () => {
     support.groupEnd = true
     support.groupColors = false
 
-    transformer(logger, payload, support, options)
+    printer(logger, payload, support, options)
 
     assert.equal(logger.log.callCount, 3)
     assert.equal(logger.group.callCount, 1)
@@ -146,7 +146,7 @@ describe('default transformer', () => {
     support.ansi = true
     payload.error = {type: 'error'}
 
-    transformer(logger, payload, support, options)
+    printer(logger, payload, support, options)
 
     assert.equal(logger.log.callCount, 4)
     assert.equal(logger.group.callCount, 1)
@@ -164,7 +164,7 @@ describe('default transformer', () => {
     support.ansi = true
     payload.diff = []
 
-    transformer(logger, payload, support, options)
+    printer(logger, payload, support, options)
 
     assert.equal(logger.log.callCount, 4)
     assert.equal(logger.group.callCount, 2)
@@ -188,7 +188,7 @@ describe('default transformer', () => {
       {kind: 'update', path: 'c', left: 'c', right: 'd'}
     ]
 
-    transformer(logger, payload, support, options)
+    printer(logger, payload, support, options)
 
     assert.equal(logger.log.callCount, 6)
     assert.equal(logger.group.callCount, 2)
