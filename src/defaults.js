@@ -13,7 +13,7 @@ export const get_defaults = () => ({
 
   styles: {
     title: {color: '#666', dim: true},
-    title_action: {color: '#000', bold: true},
+    title_action: {bold: true},
     prev: {color: '#9E9E9E', bold: true},
     action: {color: '#03A9F4', bold: true},
     error: {color: '#F20404', bold: true},

@@ -112,7 +112,7 @@ describe('default printer', () => {
     assert.deepEqual(logger.group.args[0], [
       ' %caction %cACTION! %c@ 1970-01-01T00:00:00.000Z',
       'color:#666;font-weight:lighter',
-      'color:#000;font-weight:bold',
+      'font-weight:bold',
       'color:#666;font-weight:lighter'
     ])
     assert.deepEqual(logger.log.args[0], [' %cprev state', 'color:#9E9E9E;font-weight:bold', {type: 'before'}])
