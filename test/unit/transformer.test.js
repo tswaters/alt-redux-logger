@@ -28,7 +28,12 @@ describe('default transformer', () => {
   })
 
   beforeEach(() => {
-    support = {}
+    support = {
+      colors: false,
+      groupColors: true,
+      group: true,
+      groupEnd: true
+    }
     payload = {
       action: {type: 'ACTION!'},
       before: {type: 'before'},
@@ -49,9 +54,6 @@ describe('default transformer', () => {
   })
 
   it('should function properly - no colors', () => {
-    support.colors = false
-    support.group = true
-    support.groupEnd = true
 
     transformer(logger, payload, support, options)
 
@@ -68,8 +70,6 @@ describe('default transformer', () => {
 
   it('should function properly - ansi with colors', () => {
     support.colors = true
-    support.group = true
-    support.groupEnd = true
     support.ansi = true
 
     transformer(logger, payload, support, options)
@@ -87,8 +87,6 @@ describe('default transformer', () => {
 
   it('should function properly - no ansi with colors', () => {
     support.colors = true
-    support.group = true
-    support.groupEnd = true
     support.ansi = false
 
     transformer(logger, payload, support, options)
@@ -110,7 +108,6 @@ describe('default transformer', () => {
   })
 
   it('should fall back on log if group not available', () => {
-    support.colors = false
     support.group = false
     support.groupEnd = false
 
@@ -127,10 +124,25 @@ describe('default transformer', () => {
     assert.deepEqual(logger.log.args[4], ['--log end--'])
   })
 
-  it('should include an error when available', () => {
-    support.colors = true
+  it('should aggregate group into a single statement if no group color support (ie/edge)', () => {
     support.group = true
     support.groupEnd = true
+    support.groupColors = false
+
+    transformer(logger, payload, support, options)
+
+    assert.equal(logger.log.callCount, 3)
+    assert.equal(logger.group.callCount, 1)
+    assert.equal(logger.groupEnd.callCount, 1)
+
+    assert.deepEqual(logger.group.args[0], ['action ACTION! @ 0 (in 0 ms)'])
+    assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
+    assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
+    assert.deepEqual(logger.log.args[2], ['next state', {type: 'after'}])
+    assert.deepEqual(logger.groupEnd.args[0], ['--log end--'])
+  })
+
+  it('should include an error when available', () => {
     support.ansi = true
     payload.error = {type: 'error'}
 
@@ -149,9 +161,6 @@ describe('default transformer', () => {
   })
 
   it('should handle blank diff array', () => {
-    support.colors = true
-    support.group = true
-    support.groupEnd = true
     support.ansi = true
     payload.diff = []
 
@@ -172,9 +181,6 @@ describe('default transformer', () => {
   })
 
   it('should handle diffs', () => {
-    support.colors = true
-    support.group = true
-    support.groupEnd = true
     support.ansi = true
     payload.diff = [
       {kind: 'remove', path: 'a', left: 'a', right: null},

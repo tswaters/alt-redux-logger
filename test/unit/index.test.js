@@ -21,6 +21,10 @@ describe('createLogger', () => {
     clock = sinon.useFakeTimers({now: 0, toFake: ['Date']})
   })
 
+  beforeEach(() => {
+    support.get_support.returns({console: true, groupColors: true})
+  })
+
   afterEach(() => {
     store.getState.reset()
     support.get_support.reset()
@@ -41,19 +45,16 @@ describe('createLogger', () => {
   })
 
   it('should throw for invalid levels', () => {
-    support.get_support.returns({console: true})
     assert.throws(() => createLogger({logger: {}, level: 'invalid'}), /invalid level: invalid/)
   })
 
   it('should not call transformer when predicate returns false', () => {
-    support.get_support.returns({console: true})
     next.returns('value')
     assert.equal(createLogger({predicate: () => false})(store)(next)(action), 'value')
     assert.equal(transformer.transformer.callCount, 0)
   })
 
   it('should call transformer with appropriate opts', () => {
-    support.get_support.returns({console: true})
     store.getState.onCall(0).returns({type: 'before'})
     store.getState.onCall(1).returns({type: 'after'})
     next.returns('value')
@@ -78,7 +79,6 @@ describe('createLogger', () => {
 
   it('should perform a diff & append to logger', () => {
 
-    support.get_support.returns({console: true})
     store.getState.onCall(0).returns({type: 'before'})
     store.getState.onCall(1).returns({type: 'after'})
     next.returns('value')
@@ -105,7 +105,6 @@ describe('createLogger', () => {
   })
 
   it('should catch errors, append to logger & rethrow', () => {
-    support.get_support.returns({console: true})
     store.getState.onCall(0).returns({type: 'before'})
     store.getState.onCall(1).returns({type: 'before'})
     next.throws(new Error('aw snap!'))

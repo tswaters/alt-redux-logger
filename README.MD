@@ -106,11 +106,9 @@ That said, this module is heavily inspired by `redux-logger` - at least with the
 
 ## TODO
 
-* [ ] fix edge/ie - these don't support multiple params or colors in group - need to determine this and us a single parameter.
-
 * [ ] provide a state transformer for before/after/error to turn immutablejs back to pojo prior to logging.
 
-* [ ] clean up & publish to npm
+* [ ] publish to npm
 
 [npm-badge]: https://badge.fury.io/js/alt-redux-logger.svg
 [npm-url]: https://badge.fury.io/js/alt-redux-logger

@@ -2,9 +2,9 @@ import {colors as _colors} from 'tiny-ansi-colors'
 
 export const transformer = (logger, payload, support, options) => {
 
-  const {color, level, styles, format_time} = options
+  const {color: use_color, level, styles, format_time} = options
   const {action, before, after, diff, error, now, took} = payload
-  const {ansi, colors, group: _group, groupEnd: _groupEnd} = support
+  const {ansi, colors: has_color, group: _group, groupEnd: _groupEnd} = support
 
   const group = _group ? 'group' : level
   const groupEnd = _groupEnd ? 'groupEnd' : level
@@ -15,38 +15,66 @@ export const transformer = (logger, payload, support, options) => {
     style.bold && 'font-weight:bold'
   ].filter(c => !!c).join(';')
 
-  const log_style = (a, b) =>
-    (Array.isArray(a) && Array.isArray(a[0]) ? a : [[a, b]])
-      .reduce((memo, [value, style]) => (
-        !color || !colors
-          ? [...memo, value]
-          : ansi
-            ? [...memo, _colors(value, style)]
-            :  [`${memo[0]} %c${value}`, ...memo.slice(1), transform_style(style)]
-      ), color && colors && !ansi ? [''] : [])
+  const log_style = (a, b, force_off = false) => {
 
-  logger[group](...log_style([
+    // support both simple (text, style) and complex ([[text, style], [text, style]])
+    const complex = Array.isArray(a) && Array.isArray(a[0])
+    const things = complex ? a : [[a, b]]
+
+    // if complex style, b is the force parameter.
+    force_off = complex ? b : force_off
+
+    // this turns the [text, style] array into one of the following:
+    // - browser: [`%c${first}%c{second}`, 'first-style', 'second-style', etc.]
+    // - ansi: [escape, first, unescape, escape, second, unescape, etc.]
+    // - color off by support/option or force: true, [first, second, etc.]
+
+    return things.reduce((memo, [value, color]) => (
+      force_off || !use_color || !has_color
+        ? [...memo, value]
+        : ansi
+          ? [...memo, _colors(value, color)]
+          :  [`${memo[0]} %c${value}`, ...memo.slice(1), transform_style(color)]
+    ), use_color && has_color && !ansi ? [''] : [])
+  }
+
+  const log = (...use) => {
+    return (...extra) => logger[level](...log_style(...use), ...extra)
+  }
+
+  const log_group = (...use) => {
+    const force = !support.groupColors
+    const method = support.group ? 'group' : level
+    const things = log_style(...use, force)
+    logger[method](...force ? [things.join(' ')] : things)
+  }
+
+  const log_group_end = extra => {
+    const method = support.group ? 'groupEnd' : level
+    logger[method](extra)
+  }
+
+  log_group([
     ['action', styles.title],
     [action.type, styles.title_action],
     [`@ ${format_time(now)} (in ${took} ms)`, styles.title]
-  ]))
-  logger[level](...log_style('prev state', styles.prev), before)
-  logger[level](...log_style('action    ', styles.action), action)
+  ])
+  log('prev state', styles.prev)(before)
+  log('action    ', styles.action)(action)
   if (error) {
-    logger[level](...log_style('error     ', styles.error), error)
+    log('error     ', styles.error)(error)
   }
-  logger[level](...log_style('next state', styles.next), after)
+  log('next state', styles.next)(after)
   if (diff) {
-    logger[group](...log_style('diff      ', styles.diff))
+    log_group('diff      ', styles.diff)
     if (diff.length === 0) {
       logger[level]('-- no diff --')
     } else {
-      diff.forEach(item => logger[level](
-        ...log_style(item.kind, styles[`diff_${item.kind}`]),
-        `${item.path}:`, item.left, '→', item.right
+      diff.forEach(item => log(item.kind, styles[`diff_${item.kind}`])(
+        `${item.path}:`, item.left, '→', item.right,
       ))
     }
-    logger[groupEnd]('--end diff--')
+    log_group_end('--end diff--')
   }
-  logger[groupEnd]('--log end--')
+  log_group_end('--log end--')
 }
