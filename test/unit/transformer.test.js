@@ -11,7 +11,10 @@ import {transformer} from '../../src/transformer'
 
 describe('default transformer', () => {
 
-  const options = get_defaults()
+  const options = {
+    ...get_defaults(),
+    format_time: now => now
+  }
   const logger = {
     log: sinon.stub(),
     group: sinon.stub(),
@@ -56,7 +59,7 @@ describe('default transformer', () => {
     assert.equal(logger.group.callCount, 1)
     assert.equal(logger.groupEnd.callCount, 1)
 
-    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 1969-12-31 16:00:00 (in 0 ms)'])
+    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
     assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], ['next state', {type: 'after'}])
@@ -75,7 +78,7 @@ describe('default transformer', () => {
     assert.equal(logger.group.callCount, 1)
     assert.equal(logger.groupEnd.callCount, 1)
 
-    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 1969-12-31 16:00:00 (in 0 ms)'])
+    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
     assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], ['next state', {type: 'after'}])
@@ -95,7 +98,7 @@ describe('default transformer', () => {
     assert.equal(logger.groupEnd.callCount, 1)
 
     assert.deepEqual(logger.group.args[0], [
-      ' %caction %cACTION! %c@ 1969-12-31 16:00:00 (in 0 ms)',
+      ' %caction %cACTION! %c@ 0 (in 0 ms)',
       'color:#666;font-weight:lighter',
       'color:#000;font-weight:bold',
       'color:#666;font-weight:lighter'
@@ -117,7 +120,7 @@ describe('default transformer', () => {
     assert.equal(logger.group.callCount, 0)
     assert.equal(logger.groupEnd.callCount, 0)
 
-    assert.deepEqual(logger.log.args[0], ['action', 'ACTION!', '@ 1969-12-31 16:00:00 (in 0 ms)'])
+    assert.deepEqual(logger.log.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
     assert.deepEqual(logger.log.args[1], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[2], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[3], ['next state', {type: 'after'}])
@@ -137,7 +140,7 @@ describe('default transformer', () => {
     assert.equal(logger.group.callCount, 1)
     assert.equal(logger.groupEnd.callCount, 1)
 
-    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 1969-12-31 16:00:00 (in 0 ms)'])
+    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
     assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], ['error     ', {type: 'error'}])
@@ -158,7 +161,7 @@ describe('default transformer', () => {
     assert.equal(logger.group.callCount, 2)
     assert.equal(logger.groupEnd.callCount, 2)
 
-    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 1969-12-31 16:00:00 (in 0 ms)'])
+    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
     assert.deepEqual(logger.group.args[1], ['diff      '])
     assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
@@ -185,7 +188,7 @@ describe('default transformer', () => {
     assert.equal(logger.group.callCount, 2)
     assert.equal(logger.groupEnd.callCount, 2)
 
-    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 1969-12-31 16:00:00 (in 0 ms)'])
+    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
     assert.deepEqual(logger.group.args[1], ['diff      '])
     assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])

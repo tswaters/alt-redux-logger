@@ -1,5 +1,4 @@
 
-const hasConsole = typeof console !== 'undefined'
 const isNode = typeof exports === 'object' && typeof module !== 'undefined'
 
 const browser = {
@@ -12,12 +11,13 @@ const browser = {
 }
 
 export const get_support = logger => {
-  return ({
+  const hasConsole = typeof logger !== 'undefined'
+  return {
     ansi: browser.isNode,
     console: hasConsole,
     group: hasConsole && !!logger.group,
     groupEnd: hasConsole && !!logger.groupEnd,
     colors: hasConsole && !(browser.isIE || browser.isEdge),
     groupColors: hasConsole && (browser.isChrome || browser.isSafari || browser.isFirefox),
-  })
+  }
 }
