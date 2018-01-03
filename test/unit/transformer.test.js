@@ -4,22 +4,13 @@ import sinon from 'sinon'
 import * as colors from 'tiny-ansi-colors'
 import {get_defaults} from '../../src/defaults'
 import {create_printer} from '../../src/printer'
-
-// general note
-// can't set TZ=UTC in windows, and I'm not to keen on updating local timezone to UTC
-// get around this in linux CI by setting TZ=Canada/Pacific - that will output '1969-12-31 16:00:00'
+import logger, {reset as logger_reset} from '../fixtures/logger'
 
 describe('default printer', () => {
 
   const options = {
     ...get_defaults(),
     format_time: now => new Date(now).toJSON()
-  }
-
-  const logger = {
-    log: sinon.stub(),
-    group: sinon.stub(),
-    groupEnd: sinon.stub()
   }
 
   let action = null
@@ -52,9 +43,7 @@ describe('default printer', () => {
   })
 
   afterEach(() => {
-    logger.log.reset()
-    logger.group.reset()
-    logger.groupEnd.reset()
+    logger_reset()
   })
 
   after(() => {

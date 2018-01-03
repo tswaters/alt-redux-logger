@@ -1,23 +1,13 @@
 
-/* eslint-disable no-console */
-
 import assert from 'assert'
-import sinon from 'sinon'
-import {createStore, addItem, removeItem, reset, error} from './redux'
+import {createStore, addItem, removeItem, reset, error} from '../fixtures/redux'
+import logger, {reset as logger_reset} from '../fixtures/logger'
 import {createLogger} from '../../src'
 
-describe('integration test', () => {
-
-  const logger = {
-    log: sinon.spy(function () { console.log(...arguments) }),
-    group: sinon.spy(function () { console.log(...arguments) }), // old node doesn't support group
-    groupEnd: sinon.spy(function () { console.log(...arguments) }), // old node doesn't support groupEnd
-  }
+describe('redux integration', () => {
 
   afterEach(() => {
-    logger.log.reset()
-    logger.group.reset()
-    logger.groupEnd.reset()
+    logger_reset()
   })
 
   it('should function properly with redux', () => {

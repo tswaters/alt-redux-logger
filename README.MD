@@ -124,8 +124,6 @@ That said, this module is heavily inspired by `redux-logger` - at least with the
 
 ## TODO
 
-* [ ] provide a state transformer for before/after/error to turn immutablejs back to pojo prior to logging.
-
 * [ ] publish to npm
 
 [npm-badge]: https://badge.fury.io/js/alt-redux-logger.svg

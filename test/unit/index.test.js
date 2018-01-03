@@ -6,6 +6,7 @@ import {createLogger} from '../../src'
 import * as diff from '@tswaters/tiny-diff'
 import * as support from '../../src/support'
 import * as printer from '../../src/printer'
+import logger, {reset as logger_reset} from '../fixtures/logger'
 
 describe('createLogger', () => {
 
@@ -28,6 +29,7 @@ describe('createLogger', () => {
   })
 
   afterEach(() => {
+    logger_reset()
     printStub.reset()
     store.getState.reset()
     support.get_support.reset()
@@ -61,8 +63,6 @@ describe('createLogger', () => {
     store.getState.onCall(0).returns({type: 'before'})
     store.getState.onCall(1).returns({type: 'after'})
     next.returns('value')
-    const logger = {log: {}}
-
     assert.equal(createLogger({logger})(store)(next)(action), 'value')
 
     assert.equal(diff.diff.callCount, 0)
@@ -87,7 +87,6 @@ describe('createLogger', () => {
     store.getState.onCall(1).returns({type: 'after'})
     next.returns('value')
     diff.diff.returns('a magical diff')
-    const logger = {log: {}}
 
     assert.equal(createLogger({logger, diff: true})(store)(next)(action), 'value')
 
@@ -112,9 +111,6 @@ describe('createLogger', () => {
     store.getState.onCall(0).returns({type: 'before'})
     store.getState.onCall(1).returns({type: 'before'})
     next.throws(new Error('aw snap!'))
-
-    const logger = {log: {}}
-
     assert.throws(() => createLogger({logger})(store)(next)(action), /aw snap!/)
     assert.equal(printStub.callCount, 1)
     assert.equal(printStub.args[0].length, 4)
