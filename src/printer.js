@@ -4,10 +4,7 @@ export const printer = (logger, payload, support, options) => {
 
   const {color: use_color, level, styles, format_time} = options
   const {action, before, after, diff, error, now, took} = payload
-  const {ansi, colors: has_color, group: _group, groupEnd: _groupEnd} = support
-
-  const group = _group ? 'group' : level
-  const groupEnd = _groupEnd ? 'groupEnd' : level
+  const {ansi, colors: has_color, group, groupEnd, groupColors} = support
 
   const transform_style = style => [
     style.color && `color:${style.color}`,
@@ -43,14 +40,14 @@ export const printer = (logger, payload, support, options) => {
   }
 
   const log_group = (...use) => {
-    const force = !support.groupColors
-    const method = support.group ? 'group' : level
+    const force = !groupColors
+    const method = group ? 'group' : level
     const things = log_style(...use, force)
     logger[method](...force ? [things.join(' ')] : things)
   }
 
   const log_group_end = extra => {
-    const method = support.group ? 'groupEnd' : level
+    const method = groupEnd ? 'groupEnd' : level
     logger[method](extra)
   }
 
