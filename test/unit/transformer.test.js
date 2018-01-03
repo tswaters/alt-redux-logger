@@ -97,7 +97,7 @@ describe('default transformer', () => {
     assert.deepEqual(logger.group.args[0], [
       ' %caction %cACTION! %c@ 1969-12-31 16:00:00 (in 0 ms)',
       'color:#666;font-weight:lighter',
-      'color:#fff;font-weight:bold',
+      'color:#000;font-weight:bold',
       'color:#666;font-weight:lighter'
     ])
     assert.deepEqual(logger.log.args[0], [' %cprev state', 'color:#9E9E9E;font-weight:bold', {type: 'before'}])
