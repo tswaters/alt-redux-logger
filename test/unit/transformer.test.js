@@ -3,7 +3,7 @@ import assert from 'assert'
 import sinon from 'sinon'
 import * as colors from 'tiny-ansi-colors'
 import {get_defaults} from '../../src/defaults'
-import {printer} from '../../src/printer'
+import {create_printer} from '../../src/printer'
 
 // general note
 // can't set TZ=UTC in windows, and I'm not to keen on updating local timezone to UTC
@@ -13,14 +13,22 @@ describe('default printer', () => {
 
   const options = {
     ...get_defaults(),
-    format_time: now => now
+    format_time: now => new Date(now).toJSON()
   }
+
   const logger = {
     log: sinon.stub(),
     group: sinon.stub(),
     groupEnd: sinon.stub()
   }
-  let payload = null
+
+  let action = null
+  let beforeState = null
+  let afterState = null
+  let error = null
+  let diff = null
+  let now = null
+  let took = null
   let support = null
 
   before(() => {
@@ -34,13 +42,13 @@ describe('default printer', () => {
       group: true,
       groupEnd: true
     }
-    payload = {
-      action: {type: 'ACTION!'},
-      before: {type: 'before'},
-      after: {type: 'after'},
-      now: 0,
-      took: 0
-    }
+    action = {type: 'ACTION!'}
+    beforeState = {type: 'before'}
+    afterState = {type: 'after'}
+    error = null
+    diff = null
+    now = 0
+    took = 0
   })
 
   afterEach(() => {
@@ -55,16 +63,22 @@ describe('default printer', () => {
 
   it('should function properly - no colors', () => {
 
-    printer(logger, payload, support, options)
+    const printer = create_printer(support, options)
+    printer.start(logger, action, now)
+    printer.before(logger, beforeState)
+    printer.action(logger, action)
+    printer.after(logger, afterState)
+    printer.end(logger, took)
 
-    assert.equal(logger.log.callCount, 3)
+    assert.equal(logger.log.callCount, 4)
     assert.equal(logger.group.callCount, 1)
     assert.equal(logger.groupEnd.callCount, 1)
 
-    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
+    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 1970-01-01T00:00:00.000Z'])
     assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], ['next state', {type: 'after'}])
+    assert.deepEqual(logger.log.args[3], ['(took 0 ms)'])
     assert.deepEqual(logger.groupEnd.args[0], ['--log end--'])
   })
 
@@ -72,16 +86,22 @@ describe('default printer', () => {
     support.colors = true
     support.ansi = true
 
-    printer(logger, payload, support, options)
+    const printer = create_printer(support, options)
+    printer.start(logger, action, now)
+    printer.before(logger, beforeState)
+    printer.action(logger, action)
+    printer.after(logger, afterState)
+    printer.end(logger, took)
 
-    assert.equal(logger.log.callCount, 3)
+    assert.equal(logger.log.callCount, 4)
     assert.equal(logger.group.callCount, 1)
     assert.equal(logger.groupEnd.callCount, 1)
 
-    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
+    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 1970-01-01T00:00:00.000Z'])
     assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], ['next state', {type: 'after'}])
+    assert.deepEqual(logger.log.args[3], ['(took 0 ms)'])
     assert.deepEqual(logger.groupEnd.args[0], ['--log end--'])
   })
 
@@ -89,14 +109,19 @@ describe('default printer', () => {
     support.colors = true
     support.ansi = false
 
-    printer(logger, payload, support, options)
+    const printer = create_printer(support, options)
+    printer.start(logger, action, now)
+    printer.before(logger, beforeState)
+    printer.action(logger, action)
+    printer.after(logger, afterState)
+    printer.end(logger, took)
 
-    assert.equal(logger.log.callCount, 3)
+    assert.equal(logger.log.callCount, 4)
     assert.equal(logger.group.callCount, 1)
     assert.equal(logger.groupEnd.callCount, 1)
 
     assert.deepEqual(logger.group.args[0], [
-      ' %caction %cACTION! %c@ 0 (in 0 ms)',
+      ' %caction %cACTION! %c@ 1970-01-01T00:00:00.000Z',
       'color:#666;font-weight:lighter',
       'color:#000;font-weight:bold',
       'color:#666;font-weight:lighter'
@@ -104,6 +129,7 @@ describe('default printer', () => {
     assert.deepEqual(logger.log.args[0], [' %cprev state', 'color:#9E9E9E;font-weight:bold', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], [' %caction    ', 'color:#03A9F4;font-weight:bold', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], [' %cnext state', 'color:#4CAF50', {type: 'after'}])
+    assert.deepEqual(logger.log.args[3], [' %c(took 0 ms)', 'color:#666;font-weight:lighter'])
     assert.deepEqual(logger.groupEnd.args[0], ['--log end--'])
   })
 
@@ -111,17 +137,23 @@ describe('default printer', () => {
     support.group = false
     support.groupEnd = false
 
-    printer(logger, payload, support, options)
+    const printer = create_printer(support, options)
+    printer.start(logger, action, now)
+    printer.before(logger, beforeState)
+    printer.action(logger, action)
+    printer.after(logger, afterState)
+    printer.end(logger, took)
 
-    assert.equal(logger.log.callCount, 5)
+    assert.equal(logger.log.callCount, 6)
     assert.equal(logger.group.callCount, 0)
     assert.equal(logger.groupEnd.callCount, 0)
 
-    assert.deepEqual(logger.log.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
+    assert.deepEqual(logger.log.args[0], ['action', 'ACTION!', '@ 1970-01-01T00:00:00.000Z'])
     assert.deepEqual(logger.log.args[1], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[2], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[3], ['next state', {type: 'after'}])
-    assert.deepEqual(logger.log.args[4], ['--log end--'])
+    assert.deepEqual(logger.log.args[4], ['(took 0 ms)'])
+    assert.deepEqual(logger.log.args[5], ['--log end--'])
   })
 
   it('should aggregate group into a single statement if no group color support (ie/edge)', () => {
@@ -129,80 +161,107 @@ describe('default printer', () => {
     support.groupEnd = true
     support.groupColors = false
 
-    printer(logger, payload, support, options)
+    const printer = create_printer(support, options)
+    printer.start(logger, action, now)
+    printer.before(logger, beforeState)
+    printer.action(logger, action)
+    printer.after(logger, afterState)
+    printer.end(logger, took)
 
-    assert.equal(logger.log.callCount, 3)
+    assert.equal(logger.log.callCount, 4)
     assert.equal(logger.group.callCount, 1)
     assert.equal(logger.groupEnd.callCount, 1)
 
-    assert.deepEqual(logger.group.args[0], ['action ACTION! @ 0 (in 0 ms)'])
+    assert.deepEqual(logger.group.args[0], ['action ACTION! @ 1970-01-01T00:00:00.000Z'])
     assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], ['next state', {type: 'after'}])
+    assert.deepEqual(logger.log.args[3], ['(took 0 ms)'])
     assert.deepEqual(logger.groupEnd.args[0], ['--log end--'])
   })
 
   it('should include an error when available', () => {
     support.ansi = true
-    payload.error = {type: 'error'}
+    error = {type: 'error'}
 
-    printer(logger, payload, support, options)
+    const printer = create_printer(support, options)
+    printer.start(logger, action, now)
+    printer.before(logger, beforeState)
+    printer.action(logger, action)
+    printer.error(logger, error)
+    printer.after(logger, afterState)
+    printer.end(logger, took)
 
-    assert.equal(logger.log.callCount, 4)
+    assert.equal(logger.log.callCount, 5)
     assert.equal(logger.group.callCount, 1)
     assert.equal(logger.groupEnd.callCount, 1)
 
-    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
+    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 1970-01-01T00:00:00.000Z'])
     assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], ['error     ', {type: 'error'}])
     assert.deepEqual(logger.log.args[3], ['next state', {type: 'after'}])
+    assert.deepEqual(logger.log.args[4], ['(took 0 ms)'])
     assert.deepEqual(logger.groupEnd.args[0], ['--log end--'])
   })
 
   it('should handle blank diff array', () => {
     support.ansi = true
-    payload.diff = []
+    diff = []
 
-    printer(logger, payload, support, options)
+    const printer = create_printer(support, options)
+    printer.start(logger, action, now)
+    printer.before(logger, beforeState)
+    printer.action(logger, action)
+    printer.after(logger, afterState)
+    printer.diff(logger, diff)
+    printer.end(logger, took)
 
-    assert.equal(logger.log.callCount, 4)
+    assert.equal(logger.log.callCount, 5)
     assert.equal(logger.group.callCount, 2)
     assert.equal(logger.groupEnd.callCount, 2)
 
-    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
-    assert.deepEqual(logger.group.args[1], ['diff      '])
+    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 1970-01-01T00:00:00.000Z'])
     assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], ['next state', {type: 'after'}])
+    assert.deepEqual(logger.group.args[1], ['diff      '])
     assert.deepEqual(logger.log.args[3], ['-- no diff --'])
     assert.deepEqual(logger.groupEnd.args[0], ['--end diff--'])
+    assert.deepEqual(logger.log.args[4], ['(took 0 ms)'])
     assert.deepEqual(logger.groupEnd.args[1], ['--log end--'])
   })
 
   it('should handle diffs', () => {
     support.ansi = true
-    payload.diff = [
+    diff = [
       {kind: 'remove', path: 'a', left: 'a', right: null},
       {kind: 'add', path: 'b', left: null, right: 'b'},
       {kind: 'update', path: 'c', left: 'c', right: 'd'}
     ]
 
-    printer(logger, payload, support, options)
+    const printer = create_printer(support, options)
+    printer.start(logger, action, now)
+    printer.before(logger, beforeState)
+    printer.action(logger, action)
+    printer.after(logger, afterState)
+    printer.diff(logger, diff)
+    printer.end(logger, took)
 
-    assert.equal(logger.log.callCount, 6)
+    assert.equal(logger.log.callCount, 7)
     assert.equal(logger.group.callCount, 2)
     assert.equal(logger.groupEnd.callCount, 2)
 
-    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 0 (in 0 ms)'])
-    assert.deepEqual(logger.group.args[1], ['diff      '])
+    assert.deepEqual(logger.group.args[0], ['action', 'ACTION!', '@ 1970-01-01T00:00:00.000Z'])
     assert.deepEqual(logger.log.args[0], ['prev state', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], ['next state', {type: 'after'}])
+    assert.deepEqual(logger.group.args[1], ['diff      '])
     assert.deepEqual(logger.log.args[3], ['remove', 'a:', 'a', '→', null])
     assert.deepEqual(logger.log.args[4], ['add', 'b:', null, '→', 'b'])
     assert.deepEqual(logger.log.args[5], ['update', 'c:', 'c', '→', 'd'])
     assert.deepEqual(logger.groupEnd.args[0], ['--end diff--'])
+    assert.deepEqual(logger.log.args[6], ['(took 0 ms)'])
     assert.deepEqual(logger.groupEnd.args[1], ['--log end--'])
   })
 

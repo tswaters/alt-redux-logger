@@ -51,17 +51,23 @@ It is recommended you put this AFTER any thunk/promise middleware so you only se
     * _styles_ (object, default: see below) color overrides
     * _format_time_ (function, default: `now => new Date(now).toLocaleString()`) date transformer
     * _predicate_ (function=>boolean, default: `() => true`) used to exclude actions; you get (getState, action).
-    * _printer_ (function=>void, default: pretty; see below) used to overwrite how log is called
+    * _create_printer_ (function=>void, default: pretty; see below) used to overwrite how log is called
     * _stateTransformer_ (function=>*, default: `state => state`) used to transform state prior to hitting logger
     * _actionTransformer_ (function=>*, default: `action => action`) used to transform action prior to hitting logger
     * _errorTransformer_ (function=>*, default: `error => error`) used to transform error prior to hitting logger
 
 ### Printer
 
-Printer is used to translate the payload (action, before & after states) from redux into logging statements. It is a function that takes the following 4 parameters.  See [`./src/printer.js`](./src/printer.js) for how the pretty printer does it.
+Printer is used to translate the payload (action, before & after states) from redux into logging statements. It is a function that takes the following 2 parameters, `support` and `options`.
 
-* *logger* - the loger instance provided to `createLogger` (by default, this is console)
-* *payload* - all the information available
+* *support* - rudimentary support checking (see [`./src/support.js`](./src/support.js))
+* *options* - all options provided to the logger
+
+It can return one of two things:
+
+* _function_ - if a function is provided, it will be called with `logger` and `payload`
+  * *logger* - the loger instance provided to `createLogger` (by default, this is console)
+  * *payload* - all the information available
     * _action_ - the redux action
     * _before_ - store before the action
     * _after_ - store after the action
@@ -69,8 +75,16 @@ Printer is used to translate the payload (action, before & after states) from re
     * _error?_ - error, if encountered
     * _now_ - milliseconds since Jan. 1., 1970
     * _took_ - milliseconds the action took to perform
-* *support* - rudimentary support checking (see [`./src/support.js`](./src/support.js))
-* *options* - all options provided to the logger
+* _object_ - if an object is provided, it is expected to have lifecycle functions that will be called at the appropriate time. The following functions can be provided - they will be called in this order:
+  * *start* ((logger, action, now)=>void) called when an operation starts (sets up console.group)
+  * *before* ((logger, before)=>void) called to log the state before the action occurs
+  * *action* ((logger, action)=>void) called to log the action that occurs
+  * *after* ((logger, after)=>void) called to log the state after the action occurs
+  * *error* ((logger, error)=>void) called when an error occurs
+  * *diff* ((logger, diff)=>void) called with an array of changes if `diff` and `diffPredicate` are true.
+  * *end* ((logger, took)=>void) called when an operation ends (closes console.group)
+
+See [`./src/printer.js`](./src/printer.js) for how the pretty printer does it.
 
 ### Styles
 
@@ -102,7 +116,7 @@ Here are the defaults:
 
 Why not just use [redux-logger](https://github.com/evgenyrodionov/redux-logger)?  This works great for development in the browser, but fails short on the server and in production environments.
 
-* No "don't use a pretty logger at all, `JSON.stringify` everything and do one log per action" option. I take a different approach to printing - a default printer is provided that is pretty, you can overwrite its colors -- or you can use your own printer, e.g. `printer: (logger, payload) => logger.log(JSON.stringify(payload))`.
+* No "don't use a pretty logger at all, `JSON.stringify` everything and do one log per action" option. I take a different approach to printing - a default printer is provided that is pretty, you can overwrite its colors -- or you can use your own printer, e.g. `printer: (options, support) => (logger, payload) => logger.log(JSON.stringify(payload))`.
 
 * No console coloring support. Bringing in something like chalk to a browser bundle seems a bit heavy handed, so I wrote a [very minimal coloring library](https://github.com/tswaters/tiny-ansi-colors) to support the very basics.
 

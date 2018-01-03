@@ -1,5 +1,5 @@
 
-import {printer} from './printer'
+import {create_printer} from './printer'
 
 export const get_defaults = () => ({
 
@@ -34,6 +34,6 @@ export const get_defaults = () => ({
   actionTransformer: action => action,
   errorTransformer: error => error,
 
-  printer
+  create_printer
 
 })

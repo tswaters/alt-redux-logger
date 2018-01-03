@@ -1,9 +1,8 @@
 import {colors as _colors} from 'tiny-ansi-colors'
 
-export const printer = (logger, payload, support, options) => {
+export const create_printer = (support, options) => {
 
   const {color: use_color, level, styles, format_time} = options
-  const {action, before, after, diff, error, now, took} = payload
   const {ansi, colors: has_color, group, groupEnd, groupColors} = support
 
   const transform_style = style => [
@@ -35,43 +34,56 @@ export const printer = (logger, payload, support, options) => {
     ), use_color && has_color && !ansi ? [''] : [])
   }
 
-  const log = (...use) => {
+  const log = logger => (...use) => {
     return (...extra) => logger[level](...log_style(...use), ...extra)
   }
 
-  const log_group = (...use) => {
+  const log_group = logger => (...use) => {
     const force = !groupColors
     const method = group ? 'group' : level
     const things = log_style(...use, force)
     logger[method](...force ? [things.join(' ')] : things)
   }
 
-  const log_group_end = extra => {
+  const log_group_end = logger => extra => {
     const method = groupEnd ? 'groupEnd' : level
     logger[method](extra)
   }
 
-  log_group([
-    ['action', styles.title],
-    [action.type, styles.title_action],
-    [`@ ${format_time(now)} (in ${took} ms)`, styles.title]
-  ])
-  log('prev state', styles.prev)(before)
-  log('action    ', styles.action)(action)
-  if (error) {
-    log('error     ', styles.error)(error)
-  }
-  log('next state', styles.next)(after)
-  if (diff) {
-    log_group('diff      ', styles.diff)
-    if (diff.length === 0) {
-      logger[level]('-- no diff --')
-    } else {
-      diff.forEach(item => log(item.kind, styles[`diff_${item.kind}`])(
-        `${item.path}:`, item.left, '→', item.right,
-      ))
+  return {
+    start (logger, action, now) {
+      log_group(logger)([
+        ['action', styles.title],
+        [action.type, styles.title_action],
+        [`@ ${format_time(now)}`, styles.title]
+      ])
+    },
+    before (logger, before) {
+      log(logger)('prev state', styles.prev)(before)
+    },
+    action (logger, action) {
+      log(logger)('action    ', styles.action)(action)
+    },
+    error (logger, error) {
+      log(logger)('error     ', styles.error)(error)
+    },
+    after (logger, after) {
+      log(logger)('next state', styles.next)(after)
+    },
+    diff (logger, diff) {
+      log_group(logger)('diff      ', styles.diff)
+      if (diff.length === 0) {
+        logger[level]('-- no diff --')
+      } else {
+        diff.forEach(item => log(logger)(item.kind, styles[`diff_${item.kind}`])(
+          `${item.path}:`, item.left, '→', item.right,
+        ))
+      }
+      log_group_end(logger)('--end diff--')
+    },
+    end (logger, took) {
+      log(logger)(`(took ${took} ms)`, styles.title)()
+      log_group_end(logger)('--log end--')
     }
-    log_group_end('--end diff--')
   }
-  log_group_end('--log end--')
 }

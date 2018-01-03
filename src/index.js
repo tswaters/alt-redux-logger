@@ -18,10 +18,10 @@ export const createLogger = (options = {}) => {
   const {
     logger,
     level,
-    diff,
+    diff: use_diff,
     diffPredicate,
     predicate,
-    printer,
+    create_printer,
     stateTransformer,
     actionTransformer,
     errorTransformer
@@ -35,6 +35,8 @@ export const createLogger = (options = {}) => {
 
   if (!logger[level]) { throw new Error(`invalid level: ${level}`) }
 
+  const printer = create_printer(support, opts)
+
   return store => next => action => {
 
     if (!predicate(store.getState, action)) {
@@ -43,6 +45,18 @@ export const createLogger = (options = {}) => {
 
     const now = Date.now()
     const before = stateTransformer(store.getState())
+
+    if (typeof printer.start === 'function') {
+      printer.start(logger, action, now)
+    }
+
+    if (typeof printer.before === 'function') {
+      printer.before(logger, before)
+    }
+
+    if (typeof printer.action === 'function') {
+      printer.action(logger, actionTransformer(action))
+    }
 
     let error = null
     let returnValue = null
@@ -56,20 +70,38 @@ export const createLogger = (options = {}) => {
     const took = Date.now() - now
     const after = stateTransformer(store.getState())
 
-    const payload = {
-      action: actionTransformer(action),
-      before,
-      after,
-      error,
-      now,
-      took
+    if (typeof printer.after === 'function') {
+      printer.after(logger, stateTransformer(after))
     }
 
-    if (diff && diffPredicate(store.getState, action)) {
-      payload.diff = get_diff(before, after)
+    if (error && typeof printer.error === 'function') {
+      printer.error(logger, error)
     }
 
-    printer(logger, payload, support, opts)
+    let diff = null
+    if (use_diff && diffPredicate(store.getState, action)) {
+      diff = get_diff(before, after)
+    }
+
+    if (diff && typeof printer.diff === 'function') {
+      printer.diff(logger, diff)
+    }
+
+    if (typeof printer.end === 'function') {
+      printer.end(logger, took)
+    }
+
+    if (typeof printer === 'function') {
+      printer(logger, {
+        action: actionTransformer(action),
+        before,
+        after,
+        error,
+        diff,
+        now,
+        took
+      }, support, opts)
+    }
 
     if (error) { throw error }
     return returnValue
