@@ -11,6 +11,18 @@ const browser = {
   isSafari: !isNode && !!window.safari,
 }
 
+export const get_now = () => {
+  let performance = null
+  if (isNode) {
+    try {
+      performance = require('perf_hooks').performance
+    } catch (_) { /* MODULE_NOT_FOUND */ }
+  } else if (window.performance) {
+    performance = window.performance
+  }
+  return () => performance ? performance.now() : Date.now()
+}
+
 export const get_support = logger => {
   const hasConsole = typeof logger !== 'undefined'
   return {

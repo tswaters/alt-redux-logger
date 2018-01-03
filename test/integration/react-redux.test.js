@@ -1,5 +1,4 @@
 
-import sinon from 'sinon'
 import assert from 'assert'
 import React from 'react'
 import {Provider} from 'react-redux'
@@ -13,10 +12,8 @@ import logger, {reset as logger_reset} from '../fixtures/logger'
 describe('react-redux', () => {
 
   let store = null
-  let clock = null
 
   beforeEach(() => {
-    clock = sinon.useFakeTimers({now: 0, toFake: ['Date']})
     store = createStore(
       createLogger({logger, color: false, format_time: now => new Date(now).toJSON()})
     )
@@ -24,10 +21,6 @@ describe('react-redux', () => {
 
   afterEach(() => {
     logger_reset()
-  })
-
-  after(() => {
-    clock.restore()
   })
 
   it('should log component logging in the correct order', () => {

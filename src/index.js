@@ -1,7 +1,9 @@
 
 import {get_defaults} from './defaults'
-import {get_support} from './support'
+import {get_now as _get_now, get_support} from './support'
 import {diff as get_diff} from '@tswaters/tiny-diff'
+
+const get_now = _get_now()
 
 export const createLogger = (options = {}) => {
 
@@ -58,6 +60,8 @@ export const createLogger = (options = {}) => {
       printer.action(logger, actionTransformer(action))
     }
 
+    const start = get_now()
+
     let error = null
     let returnValue = null
 
@@ -67,11 +71,11 @@ export const createLogger = (options = {}) => {
       error = errorTransformer(err)
     }
 
-    const took = Date.now() - now
+    const took = get_now() - start
     const after = stateTransformer(store.getState())
 
     if (typeof printer.after === 'function') {
-      printer.after(logger, stateTransformer(after))
+      printer.after(logger, after)
     }
 
     if (error && typeof printer.error === 'function') {

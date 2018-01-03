@@ -10,7 +10,6 @@ import logger, {reset as logger_reset} from '../fixtures/logger'
 
 describe('createLogger', () => {
 
-  let clock = null
   const printStub = sinon.stub()
   const store = {getState: sinon.stub()}
   const action = {type: 'ACTION!'}
@@ -20,7 +19,6 @@ describe('createLogger', () => {
     sinon.stub(diff, 'diff')
     sinon.stub(printer, 'create_printer')
     sinon.stub(support, 'get_support')
-    clock = sinon.useFakeTimers({now: 0, toFake: ['Date']})
   })
 
   beforeEach(() => {
@@ -40,7 +38,6 @@ describe('createLogger', () => {
     diff.diff.restore()
     printer.create_printer.restore()
     support.get_support.restore()
-    clock.restore()
   })
 
   it('should not call anything if no console', () => {

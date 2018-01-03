@@ -1,4 +1,5 @@
 --no-timeouts
 --require ./test/register.js
 --reporter dot
+test/global.js
 test/**/*.test.js
