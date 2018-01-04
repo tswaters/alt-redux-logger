@@ -215,7 +215,7 @@ describe('default printer', () => {
     assert.deepEqual(logger.log.args[1], ['action    ', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], ['next state', {type: 'after'}])
     assert.deepEqual(logger.group.args[1], ['diff      '])
-    assert.deepEqual(logger.log.args[3], ['-- no diff --'])
+    assert.deepEqual(logger.log.args[3], ['--no diff--'])
     assert.deepEqual(logger.groupEnd.args[0], ['--end diff--'])
     assert.deepEqual(logger.log.args[4], ['(took 0 ms)'])
     assert.deepEqual(logger.groupEnd.args[1], ['--log end--'])

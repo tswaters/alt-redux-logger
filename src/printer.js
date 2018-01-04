@@ -73,7 +73,7 @@ export const createPrinter = (support, options) => {
     diff (logger, diff) {
       log_group(logger)('diff      ', styles.diff)
       if (diff.length === 0) {
-        logger[level]('-- no diff --')
+        logger[level]('--no diff--')
       } else {
         diff.forEach(item => log(logger)(item.kind, styles[`diff${item.kind.substr(0, 1).toUpperCase()}${item.kind.substring(1)}`])(
           `${item.path}:`, item.left, '→', item.right,
