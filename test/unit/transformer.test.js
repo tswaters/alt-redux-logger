@@ -33,7 +33,7 @@ describe('default printer', () => {
       group: true,
       groupEnd: true
     }
-    action = {type: 'ACTION!'}
+    action = [{type: 'ACTION!'}]
     beforeState = {type: 'before'}
     afterState = {type: 'after'}
     error = null
@@ -53,9 +53,9 @@ describe('default printer', () => {
   it('should function properly - no colors', () => {
 
     const printer = createPrinter(support, options)
-    printer.start(logger, action, now)
+    printer.start(logger, now, ...action)
     printer.before(logger, beforeState)
-    printer.action(logger, action)
+    printer.action(logger, ...action)
     printer.after(logger, afterState)
     printer.end(logger, took)
 
@@ -76,9 +76,9 @@ describe('default printer', () => {
     support.ansi = true
 
     const printer = createPrinter(support, options)
-    printer.start(logger, action, now)
+    printer.start(logger, now, ...action)
     printer.before(logger, beforeState)
-    printer.action(logger, action)
+    printer.action(logger, ...action)
     printer.after(logger, afterState)
     printer.end(logger, took)
 
@@ -99,9 +99,9 @@ describe('default printer', () => {
     support.ansi = false
 
     const printer = createPrinter(support, options)
-    printer.start(logger, action, now)
+    printer.start(logger, now, ...action)
     printer.before(logger, beforeState)
-    printer.action(logger, action)
+    printer.action(logger, ...action)
     printer.after(logger, afterState)
     printer.diff(logger, [
       {kind: 'remove', path: 'a', left: 'a', right: null},
@@ -137,9 +137,9 @@ describe('default printer', () => {
     support.groupEnd = false
 
     const printer = createPrinter(support, options)
-    printer.start(logger, action, now)
+    printer.start(logger, now, ...action)
     printer.before(logger, beforeState)
-    printer.action(logger, action)
+    printer.action(logger, ...action)
     printer.after(logger, afterState)
     printer.end(logger, took)
 
@@ -161,9 +161,9 @@ describe('default printer', () => {
     support.groupColors = false
 
     const printer = createPrinter(support, options)
-    printer.start(logger, action, now)
+    printer.start(logger, now, ...action)
     printer.before(logger, beforeState)
-    printer.action(logger, action)
+    printer.action(logger, ...action)
     printer.after(logger, afterState)
     printer.end(logger, took)
 
@@ -184,9 +184,9 @@ describe('default printer', () => {
     error = {type: 'error'}
 
     const printer = createPrinter(support, options)
-    printer.start(logger, action, now)
+    printer.start(logger, now, ...action)
     printer.before(logger, beforeState)
-    printer.action(logger, action)
+    printer.action(logger, ...action)
     printer.error(logger, error)
     printer.after(logger, afterState)
     printer.end(logger, took)
@@ -209,9 +209,9 @@ describe('default printer', () => {
     diff = []
 
     const printer = createPrinter(support, options)
-    printer.start(logger, action, now)
+    printer.start(logger, now, ...action)
     printer.before(logger, beforeState)
-    printer.action(logger, action)
+    printer.action(logger, ...action)
     printer.after(logger, afterState)
     printer.diff(logger, diff)
     printer.end(logger, took)
@@ -240,9 +240,9 @@ describe('default printer', () => {
     ]
 
     const printer = createPrinter(support, options)
-    printer.start(logger, action, now)
+    printer.start(logger, now, ...action)
     printer.before(logger, beforeState)
-    printer.action(logger, action)
+    printer.action(logger, ...action)
     printer.after(logger, afterState)
     printer.diff(logger, diff)
     printer.end(logger, took)

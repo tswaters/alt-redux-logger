@@ -31,7 +31,7 @@ export const get_defaults = () => ({
   diffPredicate: () => true,
 
   stateTransformer: state => state,
-  actionTransformer: action => action,
+  actionTransformer: (...actions) => actions,
   errorTransformer: error => error,
 
   createPrinter

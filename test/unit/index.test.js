@@ -67,7 +67,7 @@ describe('createLogger', () => {
     assert.equal(printStub.args[0].length, 4)
     assert.deepEqual(printStub.args[0][0], logger)
     assert.deepEqual(printStub.args[0][1], {
-      action: {type: 'ACTION!'},
+      action: [{type: 'ACTION!'}],
       before: {type: 'before'},
       after: {type: 'after'},
       diff: null,
@@ -93,7 +93,7 @@ describe('createLogger', () => {
     assert.equal(printStub.args[0].length, 4)
     assert.deepEqual(printStub.args[0][0], logger)
     assert.deepEqual(printStub.args[0][1], {
-      action: {type: 'ACTION!'},
+      action: [{type: 'ACTION!'}],
       before: {type: 'before'},
       after: {type: 'after'},
       error: null,
@@ -113,7 +113,7 @@ describe('createLogger', () => {
     assert.equal(printStub.args[0].length, 4)
     assert.deepEqual(printStub.args[0][0], logger)
     assert.deepEqual(printStub.args[0][1], {
-      action: {type: 'ACTION!'},
+      action: [{type: 'ACTION!'}],
       before: {type: 'before'},
       after: {type: 'before'},
       diff: null,

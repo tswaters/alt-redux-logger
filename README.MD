@@ -68,7 +68,7 @@ It can return one of two things:
 * _function_ - if a function is provided, it will be called with `logger` and `payload`
   * *logger* - the loger instance provided to `createLogger` (by default, this is console)
   * *payload* - all the information available
-    * _action_ - the redux action
+    * _actions_ - the redux action(s)
     * _before_ - store before the action
     * _after_ - store after the action
     * _diff?_ - array of differences (if diff option is true)
@@ -76,9 +76,9 @@ It can return one of two things:
     * _now_ - milliseconds since Jan. 1., 1970
     * _took_ - milliseconds the action took to perform
 * _object_ - if an object is provided, it is expected to have lifecycle functions that will be called at the appropriate time. The following functions can be provided - they will be called in this order:
-  * *start* ((logger, action, now)=>void) called when an operation starts (sets up console.group)
+  * *start* ((logger, now, ...actions)=>void) called when an operation starts (sets up console.group)
   * *before* ((logger, before)=>void) called to log the state before the action occurs
-  * *action* ((logger, action)=>void) called to log the action that occurs
+  * *action* ((logger, ...actions)=>void) called to log actions that occur
   * *after* ((logger, after)=>void) called to log the state after the action occurs
   * *error* ((logger, error)=>void) called when an error occurs
   * *diff* ((logger, diff)=>void) called with an array of changes if `diff` and `diffPredicate` are true.

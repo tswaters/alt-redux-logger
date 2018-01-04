@@ -51,18 +51,18 @@ export const createPrinter = (support, options) => {
   }
 
   return {
-    start (logger, action, now) {
+    start (logger, now, ...actions) {
       log_group(logger)([
         ['action', styles.title],
-        [action.type, styles.titleAction],
+        [actions[0].type, styles.titleAction],
         [`@ ${formatTime(now)}`, styles.title]
       ])
     },
     before (logger, before) {
       log(logger)('prev state', styles.prev)(before)
     },
-    action (logger, action) {
-      log(logger)('action    ', styles.action)(action)
+    action (logger, ...actions) {
+      log(logger)('action    ', styles.action)(...actions)
     },
     error (logger, error) {
       log(logger)('error     ', styles.error)(error)

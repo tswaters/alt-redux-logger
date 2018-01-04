@@ -32,24 +32,24 @@ export const createLogger = (options = {}) => {
   const support = get_support(opts.logger)
 
   if (!support.console) {
-    return () => next => action => next(action)
+    return () => next => (...actions) => next(...actions)
   }
 
   if (!logger[level]) { throw new Error(`invalid level: ${level}`) }
 
   const printer = createPrinter(support, opts)
 
-  return store => next => action => {
+  return store => next => (...actions) => {
 
-    if (!predicate(store.getState, action)) {
-      return next(action)
+    if (!predicate(store.getState, ...actions)) {
+      return next(...actions)
     }
 
     const now = Date.now()
     const before = stateTransformer(store.getState())
 
     if (typeof printer.start === 'function') {
-      printer.start(logger, action, now)
+      printer.start(logger, now, ...actions)
     }
 
     if (typeof printer.before === 'function') {
@@ -57,7 +57,8 @@ export const createLogger = (options = {}) => {
     }
 
     if (typeof printer.action === 'function') {
-      printer.action(logger, actionTransformer(action))
+      const action = actionTransformer(...actions)
+      printer.action(logger, action[0], ...action.slice(1))
     }
 
     const start = get_now()
@@ -66,7 +67,7 @@ export const createLogger = (options = {}) => {
     let returnValue = null
 
     try {
-      returnValue = next(action)
+      returnValue = next(...actions)
     } catch (err) {
       error = errorTransformer(err)
     }
@@ -83,7 +84,7 @@ export const createLogger = (options = {}) => {
     }
 
     let diff = null
-    if (use_diff && diffPredicate(store.getState, action)) {
+    if (use_diff && diffPredicate(store.getState, ...actions)) {
       diff = get_diff(before, after)
     }
 
@@ -97,7 +98,7 @@ export const createLogger = (options = {}) => {
 
     if (typeof printer === 'function') {
       printer(logger, {
-        action: actionTransformer(action),
+        action: actionTransformer(...actions),
         before,
         after,
         error,
