@@ -103,11 +103,16 @@ describe('default printer', () => {
     printer.before(logger, beforeState)
     printer.action(logger, action)
     printer.after(logger, afterState)
+    printer.diff(logger, [
+      {kind: 'remove', path: 'a', left: 'a', right: null},
+      {kind: 'add', path: 'b', left: null, right: 'b'},
+      {kind: 'update', path: 'c', left: 'c', right: 'd'}
+    ])
     printer.end(logger, took)
 
-    assert.equal(logger.log.callCount, 4)
-    assert.equal(logger.group.callCount, 1)
-    assert.equal(logger.groupEnd.callCount, 1)
+    assert.equal(logger.log.callCount, 7)
+    assert.equal(logger.group.callCount, 2)
+    assert.equal(logger.groupEnd.callCount, 2)
 
     assert.deepEqual(logger.group.args[0], [
       ' %caction %cACTION! %c@ 1970-01-01T00:00:00.000Z',
@@ -118,8 +123,13 @@ describe('default printer', () => {
     assert.deepEqual(logger.log.args[0], [' %cprev state', 'color:#9E9E9E;font-weight:bold', {type: 'before'}])
     assert.deepEqual(logger.log.args[1], [' %caction    ', 'color:#03A9F4;font-weight:bold', {type: 'ACTION!'}])
     assert.deepEqual(logger.log.args[2], [' %cnext state', 'color:#4CAF50', {type: 'after'}])
-    assert.deepEqual(logger.log.args[3], [' %c(took 0 ms)', 'color:#666;font-weight:lighter'])
-    assert.deepEqual(logger.groupEnd.args[0], ['--log end--'])
+    assert.deepEqual(logger.group.args[1], [' %cdiff      ', 'font-weight:bold'])
+    assert.deepEqual(logger.log.args[3], [' %cremove', 'color:#F44336', 'a:', 'a', '→', null])
+    assert.deepEqual(logger.log.args[4], [' %cadd', 'color:#4CAF50', 'b:', null, '→', 'b'])
+    assert.deepEqual(logger.log.args[5], [' %cupdate', 'color:#2196F3', 'c:', 'c', '→', 'd'])
+    assert.deepEqual(logger.groupEnd.args[0], ['--end diff--'])
+    assert.deepEqual(logger.log.args[6], [' %c(took 0 ms)', 'color:#666;font-weight:lighter'])
+    assert.deepEqual(logger.groupEnd.args[1], ['--log end--'])
   })
 
   it('should fall back on log if group not available', () => {
