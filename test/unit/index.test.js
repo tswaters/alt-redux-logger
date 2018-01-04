@@ -17,12 +17,12 @@ describe('createLogger', () => {
 
   before(() => {
     sinon.stub(diff, 'diff')
-    sinon.stub(printer, 'create_printer')
+    sinon.stub(printer, 'createPrinter')
     sinon.stub(support, 'get_support')
   })
 
   beforeEach(() => {
-    printer.create_printer.returns(printStub)
+    printer.createPrinter.returns(printStub)
     support.get_support.returns({console: true, groupColors: true})
   })
 
@@ -31,12 +31,12 @@ describe('createLogger', () => {
     printStub.reset()
     store.getState.reset()
     support.get_support.reset()
-    printer.create_printer.reset()
+    printer.createPrinter.reset()
   })
 
   after(() => {
     diff.diff.restore()
-    printer.create_printer.restore()
+    printer.createPrinter.restore()
     support.get_support.restore()
   })
 

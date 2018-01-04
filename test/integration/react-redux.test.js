@@ -15,7 +15,7 @@ describe('react-redux', () => {
 
   beforeEach(() => {
     store = createStore(
-      createLogger({logger, color: false, format_time: now => new Date(now).toJSON()})
+      createLogger({logger, color: false, formatTime: now => new Date(now).toJSON()})
     )
   })
 

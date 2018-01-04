@@ -3,14 +3,14 @@ import assert from 'assert'
 import sinon from 'sinon'
 import * as colors from 'tiny-ansi-colors'
 import {get_defaults} from '../../src/defaults'
-import {create_printer} from '../../src/printer'
+import {createPrinter} from '../../src/printer'
 import logger, {reset as logger_reset} from '../fixtures/logger'
 
 describe('default printer', () => {
 
   const options = {
     ...get_defaults(),
-    format_time: now => new Date(now).toJSON()
+    formatTime: now => new Date(now).toJSON()
   }
 
   let action = null
@@ -52,7 +52,7 @@ describe('default printer', () => {
 
   it('should function properly - no colors', () => {
 
-    const printer = create_printer(support, options)
+    const printer = createPrinter(support, options)
     printer.start(logger, action, now)
     printer.before(logger, beforeState)
     printer.action(logger, action)
@@ -75,7 +75,7 @@ describe('default printer', () => {
     support.colors = true
     support.ansi = true
 
-    const printer = create_printer(support, options)
+    const printer = createPrinter(support, options)
     printer.start(logger, action, now)
     printer.before(logger, beforeState)
     printer.action(logger, action)
@@ -98,7 +98,7 @@ describe('default printer', () => {
     support.colors = true
     support.ansi = false
 
-    const printer = create_printer(support, options)
+    const printer = createPrinter(support, options)
     printer.start(logger, action, now)
     printer.before(logger, beforeState)
     printer.action(logger, action)
@@ -126,7 +126,7 @@ describe('default printer', () => {
     support.group = false
     support.groupEnd = false
 
-    const printer = create_printer(support, options)
+    const printer = createPrinter(support, options)
     printer.start(logger, action, now)
     printer.before(logger, beforeState)
     printer.action(logger, action)
@@ -150,7 +150,7 @@ describe('default printer', () => {
     support.groupEnd = true
     support.groupColors = false
 
-    const printer = create_printer(support, options)
+    const printer = createPrinter(support, options)
     printer.start(logger, action, now)
     printer.before(logger, beforeState)
     printer.action(logger, action)
@@ -173,7 +173,7 @@ describe('default printer', () => {
     support.ansi = true
     error = {type: 'error'}
 
-    const printer = create_printer(support, options)
+    const printer = createPrinter(support, options)
     printer.start(logger, action, now)
     printer.before(logger, beforeState)
     printer.action(logger, action)
@@ -198,7 +198,7 @@ describe('default printer', () => {
     support.ansi = true
     diff = []
 
-    const printer = create_printer(support, options)
+    const printer = createPrinter(support, options)
     printer.start(logger, action, now)
     printer.before(logger, beforeState)
     printer.action(logger, action)
@@ -229,7 +229,7 @@ describe('default printer', () => {
       {kind: 'update', path: 'c', left: 'c', right: 'd'}
     ]
 
-    const printer = create_printer(support, options)
+    const printer = createPrinter(support, options)
     printer.start(logger, action, now)
     printer.before(logger, beforeState)
     printer.action(logger, action)

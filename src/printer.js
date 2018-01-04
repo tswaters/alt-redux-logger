@@ -1,8 +1,8 @@
 import {colors as _colors} from 'tiny-ansi-colors'
 
-export const create_printer = (support, options) => {
+export const createPrinter = (support, options) => {
 
-  const {color: use_color, level, styles, format_time} = options
+  const {color: use_color, level, styles, formatTime} = options
   const {ansi, colors: has_color, group, groupEnd, groupColors} = support
 
   const transform_style = style => [
@@ -54,8 +54,8 @@ export const create_printer = (support, options) => {
     start (logger, action, now) {
       log_group(logger)([
         ['action', styles.title],
-        [action.type, styles.title_action],
-        [`@ ${format_time(now)}`, styles.title]
+        [action.type, styles.titleAction],
+        [`@ ${formatTime(now)}`, styles.title]
       ])
     },
     before (logger, before) {
@@ -75,7 +75,7 @@ export const create_printer = (support, options) => {
       if (diff.length === 0) {
         logger[level]('-- no diff --')
       } else {
-        diff.forEach(item => log(logger)(item.kind, styles[`diff_${item.kind}`])(
+        diff.forEach(item => log(logger)(item.kind, styles[`diff${item.kind.substr(0, 1).toUpperCase()}${item.kind.substring(1)}`])(
           `${item.path}:`, item.left, '→', item.right,
         ))
       }

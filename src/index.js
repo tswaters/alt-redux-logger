@@ -23,7 +23,7 @@ export const createLogger = (options = {}) => {
     diff: use_diff,
     diffPredicate,
     predicate,
-    create_printer,
+    createPrinter,
     stateTransformer,
     actionTransformer,
     errorTransformer
@@ -37,7 +37,7 @@ export const createLogger = (options = {}) => {
 
   if (!logger[level]) { throw new Error(`invalid level: ${level}`) }
 
-  const printer = create_printer(support, opts)
+  const printer = createPrinter(support, opts)
 
   return store => next => action => {
 

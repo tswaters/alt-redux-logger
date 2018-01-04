@@ -49,9 +49,9 @@ It is recommended you put this AFTER any thunk/promise middleware so you only se
     * _diffPredicate_ (function=>boolean, default: `() => true`) used to exclude diffs; you get (getState, action).
     * _level_ (string, default: 'log') method to use on the logger (throws during initialization if it doesn't exist)
     * _styles_ (object, default: see below) color overrides
-    * _format_time_ (function, default: `now => new Date(now).toLocaleString()`) date transformer
+    * _formatTime_ (function, default: `now => new Date(now).toLocaleString()`) date transformer
     * _predicate_ (function=>boolean, default: `() => true`) used to exclude actions; you get (getState, action).
-    * _create_printer_ (function=>void, default: pretty; see below) used to overwrite how log is called
+    * _createPrinter_ (function=>void, default: pretty; see below) used to overwrite how log is called
     * _stateTransformer_ (function=>*, default: `state => state`) used to transform state prior to hitting logger
     * _actionTransformer_ (function=>*, default: `action => action`) used to transform action prior to hitting logger
     * _errorTransformer_ (function=>*, default: `error => error`) used to transform error prior to hitting logger
@@ -99,15 +99,15 @@ Here are the defaults:
 ```json
 {
   "title": {"color": "#666", "dim": true},
-  "title_action": {"bold": true},
+  "titleAction": {"bold": true},
   "prev": {"color": "#9E9E9E", "bold": true},
   "action": {"color": "#03A9F4", "bold": true},
   "error": {"color": "#F20404", "bold": true},
   "next": {"color": "#4CAF50"},
   "diff": {"bold": true},
-  "diff_add": {"color": "#4CAF50"},
-  "diff_remove": {"color": "#F44336"},
-  "diff_update": {"color": "#2196F3"}
+  "diffAdd": {"color": "#4CAF50"},
+  "diffRemove": {"color": "#F44336"},
+  "diffUpdate": {"color": "#2196F3"}
 }
 ```
 

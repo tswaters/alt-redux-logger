@@ -1,5 +1,5 @@
 
-import {create_printer} from './printer'
+import {createPrinter} from './printer'
 
 export const get_defaults = () => ({
 
@@ -13,18 +13,18 @@ export const get_defaults = () => ({
 
   styles: {
     title: {color: '#666', dim: true},
-    title_action: {bold: true},
+    titleAction: {bold: true},
     prev: {color: '#9E9E9E', bold: true},
     action: {color: '#03A9F4', bold: true},
     error: {color: '#F20404', bold: true},
     next: {color: '#4CAF50'},
     diff: {bold: true},
-    diff_add: {color: '#4CAF50'},
-    diff_remove: {color: '#F44336'},
-    diff_update: {color: '#2196F3'}
+    diffAdd: {color: '#4CAF50'},
+    diffRemove: {color: '#F44336'},
+    diffUpdate: {color: '#2196F3'}
   },
 
-  format_time: now => new Date(now).toLocaleString(),
+  formatTime: now => new Date(now).toLocaleString(),
 
   predicate: () => true,
 
@@ -34,6 +34,6 @@ export const get_defaults = () => ({
   actionTransformer: action => action,
   errorTransformer: error => error,
 
-  create_printer
+  createPrinter
 
 })
